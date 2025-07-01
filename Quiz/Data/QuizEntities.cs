@@ -31,7 +31,7 @@ public partial class QuizEntities : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=WIN-BNES3C0B631;Initial Catalog=Quiz;Persist Security Info=True;User ID=Quiz;Password=1234");
+        => optionsBuilder.UseSqlServer("Data Source=WIN-BNES3C0B631;Initial Catalog=Quiz;Persist Security Info=True;User ID=Quiz;Password=1234;Encrypt=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -42,6 +42,7 @@ public partial class QuizEntities : DbContext
             entity.Property(e => e.Description)
                 .IsRequired()
                 .IsUnicode(false);
+            entity.Property(e => e.Index).HasDefaultValue(1);
 
             entity.HasOne(d => d.fk_QuestionNavigation).WithMany(p => p.Answers)
                 .HasForeignKey(d => d.fk_Question)

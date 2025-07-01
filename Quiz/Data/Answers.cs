@@ -15,5 +15,7 @@ public partial class Answers
 
     public bool IsCorrect { get; set; }
 
+    public int Index { get; set; }
+
     public virtual Questions fk_QuestionNavigation { get; set; }
 }
