@@ -1,8 +1,132 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    Layout = "_Layout";
+    ViewData["Title"] = "Login";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<head>
+    @*Aquí vas a poner los estilos css que quieras implementar en la vista*@
+</head>
+    
+<div id="app" class="justify-content-centers align-content-center">
+    <section class="gradient-custom">
+        <div class="container">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+                    <div class="card bg-dark text-white" style="border-radius: 1rem;">
+                        <div class="card-body p-5 text-center">
+
+                            <!--Unirse a una sala -->
+                            <div v-if="isJoinRoom" class="mb-md-5 mt-md-4 pb-5">
+                                <h2 class="fw-bold mb-4 text-uppercase">Unirse a una sala</h2>
+
+                                <div class="form-outline form-white mb-4">
+                                    <input type="text" id="roomCode" class="form-control form-control-lg" v-model="roomCode" />
+                                    <label class="form-label" for="roomCode">Código de sala</label>
+                                </div>
+
+                                <button class="btn btn-outline-light btn-lg px-5"
+                                        :disabled="!roomCode"
+                                        @@click="joinRoom()">
+                                    Unirse
+                                </button>
+
+                                <p class="mt-4">
+                                    <a href="#" class="text-white-50 fw-bold" @@click.prevent="showLoginRegister">Iniciar Sesión o Registrarse</a>
+                                </p>
+                            </div>
+
+                            <!-- Login -->
+                            <div v-else-if="isLogin" class="mb-md-5 mt-md-4 pb-5">
+                                <h2 class="fw-bold mb-2 text-uppercase">Iniciar Sesión</h2>
+                                <p class="text-white-50 mb-5">Por favor, escribe tus credenciales.</p>
+
+                                <div class="form-outline form-white mb-4">
+                                    <input type="email" id="loginEmail" class="form-control form-control-lg" v-model="credentials.Email" />
+                                    <label class="form-label" for="loginEmail">Email</label>
+                                </div>
+
+                                <div class="form-outline form-white mb-4">
+                                    <input type="password" id="loginPassword" class="form-control form-control-lg" v-model="credentials.Password" />
+                                    <label class="form-label" for="loginPassword">Contraseña</label>
+                                </div>
+
+                                <button class="btn btn-outline-light btn-lg px-5"
+                                        type="submit"
+                                        :disabled="!credentials.Email || !credentials.Password"
+                                        @@click="login()">
+                                    Iniciar sesión
+                                </button>
+
+                                <p class="mt-4">
+                                    ¿No tienes cuenta?
+                                    <a href="#" class="text-white-50 fw-bold" @@click.prevent="isLogin = false">Regístrate</a>
+                                </p>
+                            </div>
+
+                            <!--Registro -->
+                            <div v-else class="mt-md-4">
+                                <h2 class="fw-bold mb-2 text-uppercase text-center">Registro</h2>
+                                <p class="text-white-50 mb-5 text-center">Crea tu cuenta rellenando los datos.</p>
+
+                                <div class="form-outline form-white mb-4">
+                                    <label class="form-label" for="registerName">Nombre</label>
+                                    <input type="text" id="registerName" class="form-control form-control-lg" v-model="newUser.name" />
+                                </div>
+
+                                <div class="form-outline form-white mb-4">
+                                    <label class="form-label" for="registerEmail">Correo electrónico</label>
+                                    <input type="email" id="registerEmail" class="form-control form-control-lg" v-model="newUser.email" />
+                                </div>
+
+                                <div class="form-outline form-white mb-4">
+                                    <label class="form-label" for="registerPassword">Contraseña</label>
+                                    <input type="password" id="registerPassword" class="form-control form-control-lg" v-model="newUser.password" />
+                                </div>
+
+                                <div class="form-outline form-white mb-4">
+                                    <label class="form-label" for="registerConfirmPassword">Confirmar Contraseña</label>
+                                    <input type="password" id="registerConfirmPassword" class="form-control form-control-lg" v-model="newUser.confirmPassword" />
+                                </div>
+
+                                <button class="btn btn-outline-light btn-lg px-5"
+                                        type="submit"
+                                        :disabled="!newUser.email || !newUser.password || newUser.password !== newUser.confirmPassword"
+                                        @@click="register()">
+                                    Registrarse
+                                </button>
+
+                                <p class="mt-4">
+                                    ¿Ya tienes una cuenta?
+                                    <a href="#" class="text-white-50 fw-bold" @@click.prevent="isLogin = true">Inicia sesión</a>
+                                </p>
+
+                            </div>
+                            <p v-if="!isJoinRoom" class="mt-4">
+                                ¿Tienes un código de Sala?
+                                <a href="#" class="text-white-50 fw-bold" @@click.prevent="isJoinRoom = true">Unirse</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 </div>
+
+
+@section scripts {
+
+    <script>
+
+        const Login = '@Url.Action("Login", "Home")';
+        const Register = '@Url.Action("Register", "Home")';
+        const JoinRoom = '@Url.Action("JoinRoom", "Home")';
+
+    </script>
+
+    <script>window.user = @Html.Raw(Json.Serialize(ViewBag.User));</script>
+
+    @*Añade tus scripts en la carpeta "js" en wwwroot*@
+    <script src="~/js/Login.js" defer></script>
+    <script src="~/js/Layout.js" defer></script>
+}
