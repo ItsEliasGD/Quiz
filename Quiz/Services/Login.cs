@@ -8,6 +8,7 @@ namespace Quiz.Services
         private readonly QuizEntities _db = new();
         public Login() { }
 
+        //Inicia sesión con las credenciales del usuario
         public Response SignIn(Credentials credentials)
         {
             Response response = new();
@@ -20,6 +21,9 @@ namespace Quiz.Services
             {
                 if(user.Password == credentials.password)
                 {
+                    user.Login = true;
+                    _db.SaveChanges();
+
                     response.success = true;
                     response.Message = "Se ha iniciado sesión.";
                     response.Users = new Users
@@ -29,21 +33,14 @@ namespace Quiz.Services
                         Email = user.Email,
                         Login = user.Login,
                     };
-
-                    user.Login = true;
-                    _db.SaveChanges();
                 }
-                else
-                {
-                    response.success = false;
-                    response.Message = "La contraseña es incorrecta.";
-                }
-            }
-            else response.Message = "El email es incorrecto o el usuario no existe.";
+                else response.Message = "La contraseña es incorrecta.";
+            } else response.Message = "El email es incorrecto o el usuario no existe.";
 
             return response;
         }
 
+        //Cierra sesión del usuario
         public Response SignOut(int id_user)
         {
             Response response = new();
@@ -55,17 +52,16 @@ namespace Quiz.Services
             {
                 user.Login = false;
                 _db.SaveChanges();
+
                 response.success = true;
                 response.Message = "Se ha cerrado sesión.";
-            }
-            else
-            {
-                response.success = false;
-                response.Message = "El usuario no existe.";
-            }
+
+            } else response.Message = "El usuario no existe.";
+
             return response;
         }
 
+        //Registra un nuevo usuario
         public Response Register(Users newUser)
         {
             Response response = new();
@@ -78,14 +74,12 @@ namespace Quiz.Services
             {
                 _db.Users.Add(newUser);
                 _db.SaveChanges();
+
                 response.success = true;
                 response.Message = "Se ha registrado el usuario correctamente.";
-            }
-            else
-            {
-                response.success = false;
-                response.Message = "El email ya está registrado.";
-            }
+
+            } else response.Message = "El email ya está registrado.";
+
             return response;
         }
     }

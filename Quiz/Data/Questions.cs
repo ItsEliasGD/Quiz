@@ -13,6 +13,8 @@ public partial class Questions
 
     public string Description { get; set; }
 
+    public int Index { get; set; }
+
     public virtual ICollection<Answers> Answers { get; set; } = new List<Answers>();
 
     public virtual Quizes fk_QuizNavigation { get; set; }

@@ -57,6 +57,7 @@ public partial class QuizEntities : DbContext
             entity.Property(e => e.Description)
                 .IsRequired()
                 .IsUnicode(false);
+            entity.Property(e => e.Index).HasDefaultValue(1);
 
             entity.HasOne(d => d.fk_QuizNavigation).WithMany(p => p.Questions)
                 .HasForeignKey(d => d.fk_Quiz)
