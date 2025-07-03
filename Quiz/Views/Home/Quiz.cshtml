@@ -1,22 +1,40 @@
 ﻿@{
     Layout = "_Layout";
     ViewData["Title"] = "Quiz";
+    @model int;
 }
 
 <div id="app" class="quiz-container mt-5">
-    <div>
-        <h1 class="quiz-title text-center m-xxl-5"><strong>{{quiz.Name}}</strong></h1>
-
-          <h2 class="m-5">{{"Pregunta no." + question.Index + ": " + question.Description}}</h2>
+    <!-- Contenido del Quiz -->
+    <div v-if="!quizFinished && quiz">
+        <h1 class="quiz-title text-center m-xxl-5"><strong>{{ quiz.Name }}</strong></h1>
+        <h2 class="m-5">{{ "Pregunta no." + question.Index + ": " + question.Description }}</h2>
         <div class="row justify-content-center g-3">
             <div v-for="answer in question.Answers" :class="getClasses()">
-                <button class="quiz-button w-100" @@click="selectAnswer(answer)">{{ answer.Description }}</button>
+                <button class="quiz-button w-100" @@click="selectAnswer(answer)">
+                    {{ answer.Description }}
+                </button>
             </div>
         </div>
+    </div>
+
+    <!-- Mensaje Final -->
+    <div v-else class="text-center mt-5">
+        <h1 class="text-success fw-bold">¡Quiz completado!</h1>
+        <h2 class="mt-3">Tu puntuación: {{ score }}</h2>
     </div>
 </div>
 
 @section scripts {
-    <script>window.user = @Html.Raw(Json.Serialize(ViewBag.User));</script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <script>
+
+        const Save = "@Url.Action("SaveQuiz","Home")";
+        const Get = "@Url.Action("GetQuiz","Home")";
+        const ViewIndex = "@Url.Action("Index", "Home")";
+        const idQuiz = parseInt("@Model");
+    </script>
+
     <script src="~/js/Quiz.js" defer></script>
+
 }

@@ -27,13 +27,13 @@ namespace Quiz.Controllers
             return View();
         }
 
-        public IActionResult Quiz()
+        public IActionResult Quiz(int id)
         {
-            return View();
+            return View(id);
         }
-        public IActionResult Privacy()
+        public IActionResult QuizResult(int id)
         {
-            return View();
+            return View(id);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
