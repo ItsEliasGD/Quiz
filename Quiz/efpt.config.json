@@ -35,6 +35,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[Session]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[Users]",
          "ObjectType": 0
       }

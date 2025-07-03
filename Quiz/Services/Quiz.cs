@@ -56,8 +56,8 @@ namespace Quiz.Services
 
                 response.success = true;
                 response.Message = "El Quiz ha sido eliminado correctamente.";
-            }
-            else response.Message = "El quiz no ha sido encontrado";
+
+            } else response.Message = "El quiz no ha sido encontrado";
                 
             return response;
         }
@@ -115,6 +115,23 @@ namespace Quiz.Services
                 .FirstOrDefault();
 
             return quiz;
+        }
+
+        public Response Save(Session session)
+        {
+            Response response = new();
+
+            if (session != null)
+            {
+                _db.Session.Add(session);
+                _db.SaveChanges();
+
+                response.success = true;
+                response.Message = "La sesión ha sido guardada correctamente.";
+
+            } else response.Message = "No ha sido posible guardar la sesión.";
+
+            return response;
         }
     }
 }

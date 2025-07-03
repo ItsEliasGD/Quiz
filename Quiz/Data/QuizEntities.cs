@@ -27,6 +27,8 @@ public partial class QuizEntities : DbContext
 
     public virtual DbSet<Rooms> Rooms { get; set; }
 
+    public virtual DbSet<Session> Session { get; set; }
+
     public virtual DbSet<Users> Users { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -117,6 +119,20 @@ public partial class QuizEntities : DbContext
                 .HasForeignKey(d => d.fk_User)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Rooms_Users");
+        });
+
+        modelBuilder.Entity<Session>(entity =>
+        {
+            entity.HasKey(e => e.Id_Session);
+
+            entity.Property(e => e.User)
+                .IsRequired()
+                .IsUnicode(false);
+
+            entity.HasOne(d => d.fk_QuizNavigation).WithMany(p => p.Session)
+                .HasForeignKey(d => d.fk_Quiz)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Session_Quizes");
         });
 
         modelBuilder.Entity<Users>(entity =>

@@ -136,6 +136,14 @@ namespace Quiz.Controllers
             return Json(response);
         }
 
+        [HttpPost]
+        public ActionResult SaveQuiz([FromBody] Session session)
+        {
+            Response response = new();
+            if (session != null) response = _QuizServices.Save(session);
+            return Json(response);
+        }
+
         //Servicios Answer ------------------------------------------------------------------------------------------------
         [HttpPost]
         public ActionResult CreateAnswers([FromBody] List<Answers> answers)

@@ -21,5 +21,7 @@ public partial class Quizes
 
     public virtual ICollection<RoomQuizes> RoomQuizes { get; set; } = new List<RoomQuizes>();
 
+    public virtual ICollection<Session> Session { get; set; } = new List<Session>();
+
     public virtual Users fk_UserNavigation { get; set; }
 }
