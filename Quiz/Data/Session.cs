@@ -15,5 +15,7 @@ public partial class Session
 
     public int Score { get; set; }
 
+    public DateTime Date { get; set; }
+
     public virtual Quizes fk_QuizNavigation { get; set; }
 }

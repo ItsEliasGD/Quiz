@@ -117,12 +117,46 @@ namespace Quiz.Services
             return quiz;
         }
 
+        public object Quizzes(int IdUser)
+        {
+            var quizzes = _db.Quizes
+                .Where(q => q.fk_User == IdUser)
+                .Select(q => new
+                {
+                    q.Id_Quiz,
+                    q.Name,
+                    q.Description,
+                    q.Active,
+                    q.Session.Count,
+                })
+                .ToList();
+
+            return quizzes;
+        }
+
+        public object Sessions(int IdQuiz)
+        {
+            var quiz = _db.Session
+                .Where(q => q.fk_Quiz == IdQuiz)
+                .Select(q => new
+                {
+                    q.Id_Session,
+                    q.User,
+                    q.Score,
+                    q.Date,
+                })
+                .ToList();
+
+            return quiz;
+        }
+
         public Response Save(Session session)
         {
             Response response = new();
 
             if (session != null)
             {
+                session.Date = DateTime.Now;
                 _db.Session.Add(session);
                 _db.SaveChanges();
 
