@@ -1,0 +1,13 @@
+﻿.container {
+    max-width: 1000px;
+}
+
+.table th,
+.table td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+h1, h3 {
+    color: #333;
+}

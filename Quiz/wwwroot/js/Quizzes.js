@@ -22,11 +22,8 @@ const app = createApp({
                 params: {
                     IdUser: userId,
                 }
-
             })
                 .then(response => {
-                    console.log("Quizzes fetched successfully:", this.quizzes);
-
                     this.quizzes = response.data;
                     this.table = true;
 
@@ -39,31 +36,28 @@ const app = createApp({
                 });
         },
 
-        createQuiz() {
+        createQuiz(e) {
+            e.preventDefault();
             Swal.showLoading();
 
             axios.post(Create, this.quiz)
                 .then(response => {
                     if (response.data.success) {
                         Swal.fire({
-                            title: 'Success',
+                            title: 'Éxito',
                             text: response.data.Message,
                             icon: 'success',
                             timer: 2000,
-                        })
+                        });
 
                         this.quizzes.push(this.quiz);
-                        this.quiz = {
-                            fk_User: userId,
-                            Name: '',
-                            Description: '',
-                        };
+                        this.resetForm();
                         this.createMode = false;
-                        console.log("Quiz created successfully");
+                        console.log("Quiz creado exitosamente");
                     }
                 })
                 .catch(error => {
-                    console.error("Error creating quiz:", error);
+                    console.error("Error creando quiz:", error);
                 });
         },
 
@@ -74,42 +68,42 @@ const app = createApp({
                 Name: quiz.Name,
                 Description: quiz.Description,
             };
-
             this.editMode = true;
         },
 
-        editQuiz() {
+        editQuiz(e) {
+            e.preventDefault();
             Swal.showLoading();
 
             axios.post(Update, this.quiz)
                 .then(response => {
                     if (response.data.success) {
                         Swal.fire({
-                            title: 'Success',
+                            title: 'Éxito',
                             text: response.data.Message,
                             icon: 'success',
                             timer: 2000,
                         });
                         this.getQuizzes();
                         this.editMode = false;
-
-                        console.log("Quiz edited successfully");
+                        this.resetForm();
+                        console.log("Quiz editado exitosamente");
                     }
                 })
                 .catch(error => {
-                    console.error("Error editing quiz:", error);
+                    console.error("Error editando quiz:", error);
                 });
         },
 
         deleteQuiz(quiz) {
             Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
+                title: '¿Estás seguro?',
+                text: "¡No podrás revertir esto!",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
+                confirmButtonText: 'Sí, eliminar'
             }).then((result) => {
                 if (result.isConfirmed) {
                     Swal.showLoading();
@@ -118,25 +112,35 @@ const app = createApp({
                         .then(response => {
                             if (response.data.success) {
                                 Swal.fire({
-                                    title: 'Listo!',
+                                    title: 'Eliminado',
                                     text: response.data.Message,
                                     icon: 'success',
                                     timer: 2000,
                                 });
                                 this.getQuizzes();
-                                console.log("Quiz deleted successfully");
+                                console.log("Quiz eliminado exitosamente");
                             }
                         })
                         .catch(error => {
-                            console.error("Error deleting quiz:", error);
+                            console.error("Error eliminando quiz:", error);
                         });
                 }
             });
         },
 
         toggleCreateMode() {
-            this.createMode = !this.createMode;
-            this.newQuiz = {
+            this.resetForm();
+            this.createMode = true;
+        },
+
+        cancelForm() {
+            this.resetForm();
+            this.createMode = false;
+            this.editMode = false;
+        },
+
+        resetForm() {
+            this.quiz = {
                 fk_User: userId,
                 Name: '',
                 Description: '',
@@ -145,11 +149,6 @@ const app = createApp({
 
         viewQuestions(quiz) {
             window.location.href = `${ViewQuestions}/${quiz.Id_Quiz}`;
-        },
-
-        toggleEditMode(quiz) {
-            this.editMode = !this.editMode;
-            this.selectedQuiz = quiz;
         },
 
         generateTable() {
@@ -188,4 +187,5 @@ const app = createApp({
         this.getQuizzes();
     }
 });
+
 app.mount('#app');

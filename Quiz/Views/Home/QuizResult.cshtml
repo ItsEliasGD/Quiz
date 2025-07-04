@@ -1,34 +1,32 @@
 ﻿@{
     Layout = "_Layout";
     ViewData["Title"] = "Resultados del Quiz";
-
 }
-<div id="app" class="quiz-container mt-5">
-    <div>
-        <h1 class="quiz-title text-center m-xxl-5"><strong>{{quiz.Name}}</strong></h1>
+<div id="app" class="container mt-5">
+    <div class="bg-white p-4 rounded shadow-lg">
+        <h1 class="text-center mb-4"><strong>{{ quiz.Name }}</strong></h1>
+        <h3 class="mb-4 text-center">Resultados del Quiz:</h3>
 
-        <h2 class="m-5">Resultados del Quiz:</h2>
-
-        <table id="resultTable" class="display mt-4 table table-bordered">
-            <thead>
-                <tr>
-                    <th>Usuario</th>
-                    <th>Puntaje</th>
-                    <th>Quiz</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>{{ quiz.User }}</td>
-                    <td>{{ quiz.Score }} / {{ totalScore }}</td>
-                    <td>{{ quiz.Name }}</td>
-                </tr>
-            </tbody>
-        </table>
-
+        <div class="table-responsive">
+            <table ref="table" id="resultTable" class="table table-striped table-bordered w-100 text-center text-black-50">
+                <thead>
+                    <tr>
+                        <th>Usuario</th>
+                        <th></th>
+                        <th>Fecha</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ quiz.User }}</td>
+                        <td>{{ quiz.Score }} / {{ totalScore }}</td>
+                        <td>{{ quiz.Name }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
-
 
 @section scripts {
     <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>

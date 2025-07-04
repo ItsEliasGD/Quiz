@@ -1,11 +1,32 @@
 ﻿@{
     Layout = "_Layout";
     ViewData["Title"] = "Login";
+    ViewBag.IsLogin = true;
 }
 
+
 <head>
-    @*Aquí vas a poner los estilos css que quieras implementar en la vista*@
+
+    @if(ViewBag.IsLogin == true)
+    {
+
+        <style>
+            body {
+                background-image: url('/images/bosque.jpg');
+                background-size: cover;
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+                background-position: center;
+            }
+            .gradient-custom {
+                background: transparent !important;
+            }
+        </style>
+
+    }
+
 </head>
+
     
 <div id="app" class="justify-content-centers align-content-center">
     <section class="gradient-custom">
@@ -128,4 +149,6 @@
 
     @*Añade tus scripts en la carpeta "js" en wwwroot*@
     <script src="~/js/Login.js" defer></script>
+    <script src="~/css/Index.css" defer></script>
+
 }

@@ -20,9 +20,37 @@
             this.quiz.Name = "Sin datos de resultado 😕";
         }
 
-        // DataTable
+        // Esperar al renderizado antes de iniciar DataTable
         this.$nextTick(() => {
-            $('#resultTable').DataTable();
+            $(this.$refs.table).DataTable({
+                paging: false,
+                searching: false,
+                ordering: true,
+                responsive: true,
+                lengthChange: false,
+                scrollCollapse: true,
+                language: {
+                    processing: "Procesando...",
+                    search: "Buscar:",
+                    lengthMenu: "Mostrar _MENU_ registros",
+                    info: "Tabla de resultados",
+                    infoEmpty: "No hay registros disponibles",
+                    infoFiltered: "(filtrado de _MAX_ registros en total)",
+                    loadingRecords: "Cargando...",
+                    zeroRecords: "No se encontraron registros",
+                    emptyTable: "No hay datos disponibles en la tabla",
+                    paginate: {
+                        first: "Primero",
+                        previous: "Anterior",
+                        next: "Siguiente",
+                        last: "Último"
+                    },
+                    aria: {
+                        sortAscending: ": activar para ordenar ascendente",
+                        sortDescending: ": activar para ordenar descendente"
+                    }
+                }
+            });
         });
     }
 });
