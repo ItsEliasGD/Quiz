@@ -15,6 +15,13 @@ namespace Quiz.Services
 
             if (answers != null)
             {
+                //Validar que las respuestas tengan un Id_Question
+                var existingAnswers = _db.Answers
+                    .Where(a => a.fk_Question == answers[0].fk_Question)
+                    .ToList();
+
+                if(existingAnswers.Count > 0) _db.Answers.RemoveRange(existingAnswers);
+
                 _db.Answers.AddRange(answers);
                 _db.SaveChanges();
 

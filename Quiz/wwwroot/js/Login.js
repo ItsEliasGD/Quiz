@@ -59,6 +59,15 @@
         },
 
         login() {
+            Swal.fire({
+                title: "Iniciando sesión...",
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
             axios.post(Login, this.credentials)
                 .then(response => {
                     if (response.data && response.data.Users) {
@@ -72,10 +81,32 @@
                     console.error(error);
                     Swal.fire("Error", "No se pudo iniciar sesión", "error");
                 }); 
+
         },
 
         register() {
-            // (igual a tu versión actual)
+            Swal.fire({
+                title: "Registrando usuario...",
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            axios.post(Register, this.newUser)
+                .then(response => {
+                    if (response.data && response.data.success) {
+                        Swal.fire("Éxito", "Has iniciado sesión correctamente", "success");
+                        window.location.reload();
+                    } else {
+                        Swal.fire("Error", "Credenciales incorrectas", "error");
+                    }
+                })
+                .catch(error => {
+                    console.error(error);
+                    Swal.fire("Error", "No se pudo iniciar sesión", "error");
+                }); 
         },
     },
     mounted() { }

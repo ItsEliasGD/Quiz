@@ -9,19 +9,19 @@ namespace Quiz.Services
         public Question() { }
 
         //Crear las preguntas
-        public Response Create(List<Questions> questions)
+        public Response Create(Questions question)
         {
             Response response = new();
 
-            if (questions != null)
+            if (question != null)
             {
-                _db.Questions.AddRange(questions);
+                _db.Questions.Add(question);
                 _db.SaveChanges();
 
                 response.success = true;
-                response.Message = "Las preguntas han sido creadas correctamente";
+                response.Message = "La pregunta han sido creadas correctamente";
 
-            } else response.Message = "No se recibieron preguntas válidas";
+            } else response.Message = "No se recibió una pregunta válida";
 
             return response;
         }
@@ -54,19 +54,26 @@ namespace Quiz.Services
         {
             Response response = new();
 
-            var answer = _db.Answers
-                .Where(a => a.Id_Answer == Id)
+
+            var question = _db.Questions
+                .Where(q => q.Id_Question == Id)
                 .FirstOrDefault();
 
-            if (answer != null)
+            if (question != null)
             {
-                _db.Answers.Remove(answer);
+                var answers = _db.Answers
+                    .Where(a => a.fk_Question == question.Id_Question)
+                    .ToList();
+
+                if (answers != null) _db.Answers.RemoveRange(answers);
+
+                _db.Questions.Remove(question);
                 _db.SaveChanges();
 
                 response.success = true;
                 response.Message = "Pregunta eliminada correctamente";
-
-            } else response.Message = "Pregunta no encontrada";
+            }
+            else response.Message = "La pregunta no fue encontrada";
 
             return response;
         }
