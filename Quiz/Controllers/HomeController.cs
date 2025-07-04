@@ -31,7 +31,23 @@ namespace Quiz.Controllers
         {
             return View(id);
         }
+
         public IActionResult QuizResult(int id)
+        {
+            return View(id);
+        }
+
+        public IActionResult Rooms(int id)
+        {
+            return View(id);
+        }
+
+        public IActionResult Quizzes(int id)
+        {
+            return View(id);
+        }
+
+        public IActionResult Questions(int id)
         {
             return View(id);
         }
@@ -70,7 +86,7 @@ namespace Quiz.Controllers
 
         //Servicios Rooms ------------------------------------------------------------------------------------------------
         [HttpGet]
-        public ActionResult JoinRoom([FromBody] string password)
+        public ActionResult JoinRoom(string password)
         {
             Response response = new();
             if (!string.IsNullOrEmpty(password)) response = _RoomServices.Join(password);
@@ -116,6 +132,13 @@ namespace Quiz.Controllers
             return Json(quiz);
         }
 
+        [HttpGet]
+        public ActionResult GetQuizzes(int IdUser)
+        {
+            object quizzes = _QuizServices.Quizzes(IdUser);
+            return Json(quizzes);
+        }
+
         [HttpPost]
         public ActionResult CreateQuiz([FromBody] Quizes quiz)
         {
@@ -146,6 +169,14 @@ namespace Quiz.Controllers
             Response response = new();
             if (session != null) response = _QuizServices.Save(session);
             return Json(response);
+        }
+
+        [HttpGet]
+        public ActionResult GetSessions(int IdQuiz)
+        {
+            object list = new();
+            if (IdQuiz > 0) list = _QuizServices.Sessions(IdQuiz);
+            return Json(list);
         }
 
         //Servicios Answer ------------------------------------------------------------------------------------------------

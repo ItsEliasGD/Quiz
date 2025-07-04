@@ -1,0 +1,51 @@
+﻿@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Quizzes";
+
+    @model int;
+}
+
+<div id="app" class="container mt-5">
+    <div class="card">
+        <div class="card-header">
+            <h2>Quizzes</h2>
+        </div>
+        <div class="card-body">
+            <table id="table" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                        <th>Status</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody v-for="quiz in quizzes">
+                    <tr>
+                        <td>{{ quiz.Name }}</td>
+                        <td>{{ quiz.Description }}</td>
+                        <td>{{ quiz.Status }}</td>
+                        <td>
+                            <div>
+                                <button class="btn btn-primary" @@click="editQuiz(quiz.Id)">Editar</button>
+                                <button class="btn btn-danger" @@click="deleteQuiz(quiz.Id)">Eliminar</button>
+                                <button class="btn btn-info" @@click ="viewQuestions(quiz.Id)">Preguntas</button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        const userId = parseInt('@Model');
+        const Quizzes = "@Url.Action("GetQuizzes","Home")";
+        const Create = "@Url.Action("CreateQuiz", "Home")";
+        const Update = "@Url.Action("UpdateQuiz", "Home")";
+        const Delete = "@Url.Action("DeleteQuiz", "Home")";
+    </script>
+    <script src="~/js/Quizzes.js" defer></script>
+}
