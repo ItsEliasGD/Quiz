@@ -156,10 +156,10 @@ namespace Quiz.Controllers
         }
 
         [HttpPost]
-        public ActionResult DeleteQuiz([FromBody] int IdQuiz)
+        public ActionResult DeleteQuiz([FromBody] Quizes quiz)
         {
             Response response = new();
-            if (IdQuiz > 0) response = _QuizServices.Delete(IdQuiz);
+            if (quiz != null) response = _QuizServices.Delete(quiz.Id_Quiz);
             return Json(response);
         }
 

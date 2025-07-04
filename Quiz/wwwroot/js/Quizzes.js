@@ -8,7 +8,7 @@ const app = createApp({
             createMode: false,
             table: false,
             selectedQuiz: null,
-            newQuiz: {
+            quiz: {
                 fk_User: userId,
                 Name: '',
                 Description: '',
@@ -17,10 +17,12 @@ const app = createApp({
     },
     methods: {
         getQuizzes() {
+            console.log("Fetching quizzes for user:", userId);
             axios.get(Quizzes, {
-                param: {
+                params: {
                     IdUser: userId,
                 }
+
             })
                 .then(response => {
                     console.log("Quizzes fetched successfully:", this.quizzes);
@@ -40,7 +42,7 @@ const app = createApp({
         createQuiz() {
             Swal.showLoading();
 
-            axios.post(Create, this.newQuiz)
+            axios.post(Create, this.quiz)
                 .then(response => {
                     if (response.data.success) {
                         Swal.fire({
@@ -50,8 +52,8 @@ const app = createApp({
                             timer: 2000,
                         })
 
-                        this.quizzes.push(this.newQuiz);
-                        this.newQuiz = {
+                        this.quizzes.push(this.quiz);
+                        this.quiz = {
                             fk_User: userId,
                             Name: '',
                             Description: '',
@@ -65,15 +67,21 @@ const app = createApp({
                 });
         },
 
-        editQuiz(quiz) {
-            Swal.showLoading();
-
-            axios.post(Edit, {
+        editToggle(quiz) {
+            this.quiz = {
                 Id_Quiz: quiz.Id_Quiz,
+                fk_User: quiz.fk_User,
                 Name: quiz.Name,
                 Description: quiz.Description,
-                Active: quiz.Active,
-            })
+            };
+
+            this.editMode = true;
+        },
+
+        editQuiz() {
+            Swal.showLoading();
+
+            axios.post(Update, this.quiz)
                 .then(response => {
                     if (response.data.success) {
                         Swal.fire({
@@ -83,6 +91,8 @@ const app = createApp({
                             timer: 2000,
                         });
                         this.getQuizzes();
+                        this.editMode = false;
+
                         console.log("Quiz edited successfully");
                     }
                 })
@@ -91,7 +101,7 @@ const app = createApp({
                 });
         },
 
-        deleteQuiz(IdQuiz) {
+        deleteQuiz(quiz) {
             Swal.fire({
                 title: 'Are you sure?',
                 text: "You won't be able to revert this!",
@@ -104,7 +114,7 @@ const app = createApp({
                 if (result.isConfirmed) {
                     Swal.showLoading();
 
-                    axios.post(Delete, { IdQuiz: IdQuiz})
+                    axios.post(Delete, quiz)
                         .then(response => {
                             if (response.data.success) {
                                 Swal.fire({
@@ -133,6 +143,10 @@ const app = createApp({
             };
         },
 
+        viewQuestions(quiz) {
+            window.location.href = `${ViewQuestions}/${quiz.Id_Quiz}`;
+        },
+
         toggleEditMode(quiz) {
             this.editMode = !this.editMode;
             this.selectedQuiz = quiz;
@@ -144,7 +158,7 @@ const app = createApp({
                 searching: true,
                 ordering: true,
                 responsive: true,
-                scrollY: this.user.fk_Role === 1 ? '225px' : '600px',
+                scrollY: '600px',
                 scrollCollapse: true,
                 language: {
                     processing: "Procesando...",

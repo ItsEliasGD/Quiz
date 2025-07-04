@@ -1,1 +1,70 @@
-﻿
+﻿@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Questions";
+
+    @model int;
+}
+
+<div id="app" class="container mt-5">
+    <div class="card shadow">
+        <div class="card-header"></div>
+        <div class="card-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Descripción</th>
+                        <th>Índice</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="question in questions" :key="question.Id">
+                        <td>{{ question.Description }}</td>
+                        <td>{{ question.Index }}</td>
+                        <td>
+                            <button class="btn btn-sm btn-primary me-1" @@click="editToggle(question)">Editar</button>
+                            <button class="btn btn-sm btn-danger me-1" @@click="deleteQuestion(question)">Eliminar</button>
+                            <button class="btn btn-sm btn-success" @@click="addAnswers(question)">Añadir pregunta</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div v-if="createMode || editMode" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+        <div class="bg-white rounded-2xl shadow-lg w-full max-w-md p-6">
+            <h2 class="text-xl font-bold mb-4">Quiz</h2>
+
+            <form>
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-1">Descripción</label>
+                    <textarea v-model="question.Description"
+                              class="w-full border rounded px-3 py-2 h-24 resize-none focus:outline-none focus:ring focus:border-blue-300"></textarea>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-1">Orden de presentación</label>
+                    <select v-model="question.Index"
+                            class="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-300">
+                        <option v-for="item in indexList" :key="item" :value="item">{{ item }}</option>
+                </div>
+
+                <div class="flex justify-end space-x-3">
+                    <button @@click="createMode = false" type="button" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Cancelar</button>
+                    <button v-if="createMode" @@click="createQuestion()" type="submit" class="btn btn-primary px-4 py-2 bg-blue-600 rounded hover:bg-blue-700">Crear</button>
+                    <button v-if="editMode" @@click="editQuestion()" type="submit" class="btn btn-primary px-4 py-2 bg-blue-600 rounded hover:bg-blue-700">Editar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+        const quizId = @Model;
+        const Questions = "@Url.Action("GetQuestions", "Home")";
+        const Create = "@Url.Action("CreateQuestion", "Home")";
+        const Update = "@Url.Action("UpdateQuestion", "Home")";
+        const Delete = "@Url.Action("DeleteQuestion", "Home")";
+    </script>
+    <script src="~/js/Questions.js"></script>
+}

@@ -76,6 +76,12 @@ namespace Quiz.Services
         {
             var Questions = _db.Questions
                 .Where(a => a.fk_Quiz == IdQuiz)
+                .Select(q => new
+                {
+                    q.Id_Question,
+                    q.Description,
+                    q.Index,
+                })
                 .ToList();
 
             return Questions;

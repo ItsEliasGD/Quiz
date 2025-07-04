@@ -1,4 +1,5 @@
-﻿using Quiz.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using Quiz.Data;
 using Quiz.Models;
 
 namespace Quiz.Services
@@ -27,6 +28,10 @@ namespace Quiz.Services
                     room.Id_Room,
                     room.Name,
                     room.Password,
+                    IdQuiz = _db.RoomQuizes
+                        .Where(rq => rq.fk_Room == room.Id_Room)
+                        .Select(rq => rq.Id_RoomQuize)
+                        .FirstOrDefault()
                 };
 
             } else response.Message = "La sala no fue encontrada";

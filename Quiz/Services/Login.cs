@@ -1,4 +1,5 @@
-﻿using Quiz.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using Quiz.Data;
 using Quiz.Models;
 
 namespace Quiz.Services

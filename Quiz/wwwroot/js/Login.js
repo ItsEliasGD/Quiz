@@ -3,27 +3,18 @@
         return {
             isJoinRoom: true,      // Mostrar "Unirse a sala" al inicio
             isLogin: true,         // Luego puedes alternar login/registro
-
             roomCode: '',
+            room: {},
 
             credentials: {
                 Email: '',
                 Password: '',
             },
 
-            Authorization: {
-                Success: false,
-                User: null,
-            },
-
             newUser: {
-                id_User: 0,
-                name: '',
-                email: '',
-                password: '',
-                phone: '',
-                fk_Sex: '',
-                fk_Role: 2,
+                Name: '',
+                Email: '',
+                Password: '',
             },
 
             confirmPassword: '',
@@ -51,11 +42,15 @@
                 }
             });
 
-            axios.post(JoinRoom, { code: this.roomCode })
+            axios.get(JoinRoom, {
+                param: {
+                    Password: this.roomCode,
+                }
+            })
                 .then(response => {
                     Swal.fire("Éxito", "Te has unido a la sala correctamente", "success");
                     // Aquí podrías redirigir si es necesario
-                    // window.location.href = "/sala?id=" + response.data.roomId;
+                //    window.location.href = `${ViewQuiz}/${response.data.IdQuiz}`
                 })
                 .catch(error => {
                     console.error(error);
@@ -64,17 +59,24 @@
         },
 
         login() {
-            // (igual a tu versión actual)
+            axios.post(Login, this.credentials)
+                .then(response => {
+                    if (response.data && response.data.Users) {
+                        Swal.fire("Éxito", "Has iniciado sesión correctamente", "success");
+                        window.location.href = `${ViewQuizzes}/${response.data.Users.Id_User}`;
+                    } else {
+                        Swal.fire("Error", "Credenciales incorrectas", "error");
+                    }
+                })
+                .catch(error => {
+                    console.error(error);
+                    Swal.fire("Error", "No se pudo iniciar sesión", "error");
+                }); 
         },
 
         register() {
             // (igual a tu versión actual)
         },
-
-        goToIndex(idUser) {
-            const root = window.index || null;
-            if (root) window.location.href = `${root}?id=${idUser}`;
-        }
     },
     mounted() { }
 });
