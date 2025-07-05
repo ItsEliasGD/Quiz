@@ -32,8 +32,8 @@
             </table>
         </div>
     </div>
-    <div v-if="createMode || editMode" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-        <div class="bg-white rounded-2xl shadow-lg w-full max-w-md p-6">
+    <div v-if="createMode || editMode" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 modal-overlay">
+        <div class="bg-white rounded-2xl shadow-lg w-full max-w-md p-6 modal-content">
             <h2 class="text-xl font-bold mb-4">Pregunta</h2>
 
             <form>
@@ -51,7 +51,7 @@
                 </div>
 
                 <div class="flex justify-end space-x-3">
-                    <button @@click="createMode = false" type="button" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Cancelar</button>
+                    <button @@click="closeQuestionModal" type="button" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Cancelar</button>
                     <button v-if="createMode" @@click="createQuestion()" type="submit" class="btn btn-primary px-4 py-2 bg-blue-600 rounded hover:bg-blue-700">Crear</button>
                     <button v-if="editMode" @@click="editQuestion()" type="submit" class="btn btn-primary px-4 py-2 bg-blue-600 rounded hover:bg-blue-700">Editar</button>
                 </div>
@@ -60,7 +60,7 @@
     </div>
 
     <!-- Modal -->
-    <div v-if="addAnswersMode" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+    <div v-if="addAnswersMode" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
         <div class="bg-white rounded-2xl shadow-lg w-full max-w-xl p-6">
             <h2 class="text-xl font-bold mb-4">Añadir Respuestas</h2>
 
@@ -81,7 +81,7 @@
                         <td class="px-4 py-2">{{ answer.IsCorrect ? 'Sí' : 'No' }}</td>
                         <td class="px-4 py-2 text-center">
                             <button @@click="editAnswer(answer)" class="text-red-500 hover:text-red-700 text-xl font-bold leading-none">&times;</button>
-                            <button @@click="deleteAnswer(answer)" class="text-red-500 hover:text-red-700 text-xl font-bold leading-none">&times;</button>
+                            <button @@c lick="deleteAnswer(answer)" class="text-red-500 hover:text-red-700 text-xl font-bold leading-none">&times;</button>
                         </td>
                     </tr>
                 </tbody>
@@ -108,7 +108,7 @@
             <!-- Botones del formulario -->
             <div class="flex justify-between items-center mb-4">
                 <button v-if="!editAnswerMode"
-                    @@click="addAnswers(answer.fk_Question)"
+                        @@click="addAnswers(answer.fk_Question)"
                         class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
                         :disabled="answers.length >= 4 || !answer.Description">
                     Añadir Respuesta
@@ -118,9 +118,9 @@
 
             <!-- Botones finales -->
             <div class="flex justify-end gap-3">
-                <button @@click="addAnswersMode = false" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Cancelar</button>
+                <button @@click="closeAnswerModal" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Cancelar</button>
                 <button v-if="!editAnswerMode"
-                    @@click="createAnswres()"
+                        @@click="createAnswres()"
                         class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
                         :disabled="answers.length < 2">
                     Guardar
@@ -136,7 +136,7 @@
 
 </div>
 
-@section scripts{
+@section scripts {
     <script>
         // Questions
         const quizId = parseInt('@Model');
