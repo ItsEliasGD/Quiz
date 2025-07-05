@@ -43,14 +43,15 @@
             });
 
             axios.get(JoinRoom, {
-                param: {
+                params: {
                     Password: this.roomCode,
                 }
             })
                 .then(response => {
                     Swal.fire("Éxito", "Te has unido a la sala correctamente", "success");
+                    console.log("Unirse a una sala",response.data);
                     // Aquí podrías redirigir si es necesario
-                //    window.location.href = `${ViewQuiz}/${response.data.IdQuiz}`
+                    window.location.href = `${ViewQuiz}/${response.data.Object.IdQuiz}`
                 })
                 .catch(error => {
                     console.error(error);

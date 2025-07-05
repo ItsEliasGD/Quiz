@@ -1,30 +1,24 @@
 ﻿@{
     Layout = "_Layout";
     ViewData["Title"] = "Login";
-    ViewBag.IsLogin = true;
+    bool IsLogin = true;
 }
 
 
 <head>
+    <style>
+        body {
+            background-image: url('/images/bosque.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-position: center;
+        }
 
-    @if(ViewBag.IsLogin == true)
-    {
-
-        <style>
-            body {
-                background-image: url('/images/bosque.jpg');
-                background-size: cover;
-                background-repeat: no-repeat;
-                background-attachment: fixed;
-                background-position: center;
-            }
-            .gradient-custom {
-                background: transparent !important;
-            }
-        </style>
-
-    }
-
+        .gradient-custom {
+            background: transparent !important;
+        }
+    </style>
 </head>
 
     

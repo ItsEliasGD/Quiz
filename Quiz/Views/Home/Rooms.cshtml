@@ -1,1 +1,108 @@
-﻿
+﻿@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Rooms";
+    @model int;
+}
+
+<div id="app" class="container mt-5">
+    <button class="btn btn-primary btn-lg mb-4" @@click="createMode = true">Agregar +</button>
+
+    <div class="card shadow-sm rounded-4">
+        <div class="card-header bg-light">
+            <h2 class="m-0">Salas</h2>
+        </div>
+        <div class="card-body">
+            <table id="table" class="table table-striped">
+                <thead class="table-light">
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                        <th>Código</th>
+                        <th>Status</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="room in rooms" :key="room.Id_Room">
+                        <td>{{ room.Name }}</td>
+                        <td>{{ room.Description }}</td>
+                        <td>{{ room.Password }}</td>
+                        <td>{{ room.Active ? "Activo" : "Inactivo" }}</td>
+                        <td>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-sm btn-primary" @@click="editToggle(room)">Editar</button>
+                                <button class="btn btn-sm btn-danger" @@click="deleteRoom(room)">Eliminar</button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Popup Modal -->
+    <div v-if="createMode || editMode"
+         class="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
+         style="background-color: rgba(0, 0, 0, 0.5); z-index: 1050;">
+
+        <div class="bg-white p-5 rounded shadow-lg" style="min-width: 400px; max-width: 90%;">
+            <h2 class="text-center mb-4">Crear / Editar Sala</h2>
+            <form>
+                <div class="mb-3">
+                    <label class="form-label">Nombre de la Sala</label>
+                    <input type="text" v-model="room.Name" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Código</label>
+                    <input type="text" v-model="room.Password" class="form-control" required>
+                </div>
+
+                <div class="form-check mb-3">
+                    <input type="checkbox" v-model="room.Active" class="form-check-input" id="activeCheckbox">
+                    <label class="form-check-label" for="activeCheckbox">¿Sala activa?</label>
+                </div>
+
+                <div>
+                    <select v-model="quiz"
+                            class="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-300">
+                        <option value="" disabled selected>Seleccione un Quiz</option>
+                        <option v-for="item in quizzes" :key="item" :value="item">{{ item.Name }}</option>
+                    </select>
+                </div>
+
+
+                <div class="mb-3">
+                    <label class="form-label">Descripción</label>
+                    <textarea v-model="room.Description" class="form-control" rows="4"></textarea>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2">
+                    <button type="button" class="btn btn-secondary" @@click ="cancelForm">Cancelar</button>
+
+                    <button type="submit" class="btn btn-primary" v-if="createMode" @@click ="createRoom">
+                        Crear +
+                    </button>
+
+                    <button type="submit" class="btn btn-success" v-if="editMode" @@click ="editRoom">
+                        Guardar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        const userId = parseInt('@Model');
+        const Rooms = "@Url.Action("GetRooms", "Home")";
+        const Quizzes = "@Url.Action("GetQuizzes", "Home")";
+        const RoomQuiz = "@Url.Action("GetRoomQuiz", "Home")";
+        const Create = "@Url.Action("CreateRoom", "Home")";
+        const CreateRoomQuiz = "@Url.Action("CreateRoomQuiz", "Home")";
+        const Update = "@Url.Action("UpdateRoom", "Home")";
+        const Delete = "@Url.Action("DeleteRoom", "Home")";
+    </script>
+    <script src="~/js/Rooms.js" defer></script>
+}

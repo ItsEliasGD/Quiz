@@ -1,4 +1,5 @@
-﻿using Quiz.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using Quiz.Data;
 using Quiz.Models;
 
 namespace Quiz.Services
@@ -93,24 +94,30 @@ namespace Quiz.Services
         public object? Get(int Id)
         {
             var quiz = _db.Quizes
-                .Where(q => q.Id_Quiz == Id && q.Active)
+                .Where(q => q.Id_Quiz == Id)
                 .Select(q => new
                 {
                     q.Id_Quiz,
                     q.Name,
-                    Questions = q.Questions.Select(qs => new
-                    {
-                        qs.Id_Question,
-                        qs.Description,
-                        qs.Index,
-                        Answers = qs.Answers.Select(a => new
+                    Questions = _db.Questions
+                        .Where(qs => qs.fk_Quiz == Id)
+                        .Select(qs => new
                         {
-                            a.Id_Answer,
-                            a.Description,
-                            a.Index,
-                            a.IsCorrect,
-                        }).ToList()
-                    }).ToList(),
+                            qs.Id_Question,
+                            qs.Description,
+                            qs.Index,
+                            Answers = _db.Answers
+                                .Where(a => a.fk_Question == qs.Id_Question)
+                                .Select(a => new
+                                {
+                                    a.Id_Answer,
+                                    a.Description,
+                                    a.IsCorrect,
+                                    a.Index,
+                                })
+                                .ToList()
+                        })
+                        .ToList(),
                 })
                 .FirstOrDefault();
 
@@ -127,7 +134,6 @@ namespace Quiz.Services
                     q.Name,
                     q.Description,
                     q.Active,
-                    q.Session.Count,
                 })
                 .ToList();
 
@@ -148,6 +154,45 @@ namespace Quiz.Services
                 .ToList();
 
             return quiz;
+        }
+
+        public object? roomQuizzes(int roomId)
+        {
+            var roomQuiz = _db.RoomQuizes
+                .Include(rq => rq.fk_QuizNavigation)
+                .Where(q => q.fk_Room == roomId)
+                .Select(q => new
+                {
+                    q.Id_RoomQuize,
+                    q.fk_Room,
+                    q.fk_Quiz,
+                    QuizName = q.fk_QuizNavigation.Name,
+                })
+                .FirstOrDefault();
+
+            return roomQuiz;
+        }
+
+        public Response CreateroomQuiz(RoomQuizes roomQuiz)
+        {
+            Response response = new();
+
+            if (roomQuiz != null)
+            {
+                var existingRoomQuiz = _db.RoomQuizes
+                    .FirstOrDefault(rq => rq.fk_Room == roomQuiz.fk_Room);
+
+                if (existingRoomQuiz != null) _db.RoomQuizes.Remove(existingRoomQuiz);
+
+                _db.RoomQuizes.Add(roomQuiz);
+                _db.SaveChanges();
+
+                response.success = true;
+                response.Message = "El Quiz ha sido añadido a la sala correctamente.";
+            }
+            else response.Message = "No ha sido posible añadir el Quiz a la sala.";
+
+            return response;
         }
 
         public Response Save(Session session)

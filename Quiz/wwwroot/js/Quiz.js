@@ -1,10 +1,8 @@
-﻿const { createApp } = Vue;
-
-const app = createApp({
+﻿const app = Vue.createApp({
     data() {
         return {
             currentIndex: 1,
-            flashUser: "Chompin",
+            flashUser: "",
             score: 0,
             quizFinished: false,
             session: {},
@@ -13,15 +11,11 @@ const app = createApp({
         };
     },
     methods: {
-
         save() {
-
             axios.post(Save, {
-
                 fk_Quiz: this.quiz.Id_Quiz,
                 User: this.flashUser,
                 Score: this.score,
-
             }).then(response => {
 
                 if (response.data.success) {
@@ -31,32 +25,22 @@ const app = createApp({
                         icon: 'success',
                         timer: 2000,
                     })
-                        .then(() => {
-
-                            window.location.href = ViewIndex;
-
-                        });
+                        .then(() => window.location.href = ViewIndex);
                 }
             });
         },
 
         getQuiz() {
-
-            axios.get(Get, {
-
-                param: {
-
+            console.log(Quiz);
+            axios.get(Quiz, {
+                params: {
                    IdQuiz: idQuiz,
-
                 }
-
             }).then(response => {
-
                 this.quiz = response.data;
+                console.log(response.data);
                 this.question = this.quiz.Questions[0];
-
             })
-
         },
 
         getClasses() {
@@ -89,12 +73,9 @@ const app = createApp({
             };
             console.log("Sesión:", this.session);
         },
-        },
+    },
     mounted() {
-
         this.getQuiz();
-
     }
 });
-
 app.mount("#app");

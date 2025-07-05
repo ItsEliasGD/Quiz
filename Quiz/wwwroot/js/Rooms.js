@@ -3,19 +3,50 @@
 const app = createApp({
     data() {
         return {
+            rooms: [],
             quizzes: [],
+            quiz: {
+                Id_Quiz: 0,
+                fk_User: 0,
+                Name: '',
+                Description: '',
+            },
+            roomQuiz: {},
             editMode: false,
             createMode: false,
             table: false,
-            selectedQuiz: null,
-            quiz: {
+            idQuiz: 0,
+            room: {
                 fk_User: userId,
                 Name: '',
                 Description: '',
+                Password: '',
+                Active: false,
             },
         };
     },
     methods: {
+        getRooms() {
+            console.log("Fetching rooms for user:", userId);
+            axios.get(Rooms, {
+                params: {
+                    IdUser: userId,
+                }
+            })
+                .then(response => {
+                    this.rooms = response.data;
+                    this.table = true;
+
+                    console.log("salas: ", this.rooms);
+                    this.$nextTick(() => {
+                        this.generateTable();
+                    });
+                })
+                .catch(error => {
+                    console.error("Error fetching rooms:", error);
+                });
+        },
+
         getQuizzes() {
             console.log("Fetching quizzes for user:", userId);
             axios.get(Quizzes, {
@@ -25,22 +56,46 @@ const app = createApp({
             })
                 .then(response => {
                     this.quizzes = response.data;
-                    this.table = true;
-
-                    this.$nextTick(() => {
-                        this.generateTable();
-                    });
+                    console.log("quizzes: ", this.quizzes);
                 })
                 .catch(error => {
                     console.error("Error fetching quizzes:", error);
                 });
         },
 
-        createQuiz(e) {
+        getRoomQuiz(idRoom) {
+            axios.get(RoomQuiz, {
+                params: {
+                    roomId: this.room.Id_Room,
+                }
+            })
+                .then(response => {
+                    if (response.data) this.quiz = this.quizzes.find(q => q.Id_Quiz === response.data.fk_Quiz);
+                    this.roomQuiz = response.data;
+
+                    console.log("RoomQuiz: ", this.roomQuiz);
+                })
+                .catch(error => {
+                    console.error("Error fetching RoomQuiz:", error);
+                });
+        },
+
+        createRoomQuiz() {
+            axios.post(CreateRoomQuiz, {
+                fk_Room: this.room.Id_Room,
+                fk_Quiz: this.quiz.Id_Quiz,
+            })
+                .then(response => console.log(response.data.Message))
+                .catch(error => {
+                    console.error("Error creando RoomQuiz:", error);
+                });
+        },
+
+        createRoom(e) {
             e.preventDefault();
             Swal.showLoading();
 
-            axios.post(Create, this.quiz)
+            axios.post(Create, this.room)
                 .then(response => {
                     if (response.data.success) {
                         Swal.fire({
@@ -50,32 +105,44 @@ const app = createApp({
                             timer: 2000,
                         });
 
-                        this.quizzes.push(this.quiz);
+                        this.rooms.push(this.room);
                         this.resetForm();
                         this.createMode = false;
-                        console.log("Quiz creado exitosamente");
+                        window.location.reload();
+                        console.log("Room creado exitosamente");
                     }
                 })
                 .catch(error => {
-                    console.error("Error creando quiz:", error);
+                    console.error("Error creando room:", error);
                 });
         },
 
-        editToggle(quiz) {
-            this.quiz = {
-                Id_Quiz: quiz.Id_Quiz,
-                fk_User: quiz.fk_User,
-                Name: quiz.Name,
-                Description: quiz.Description,
+        editToggle(room) {
+            this.room = {
+                Id_Room: room.Id_Room,
+                fk_User: room.fk_User,
+                Name: room.Name,
+                Description: room.Description,
+                Password: room.Password,
+                Active: room.Active,
             };
+
+            this.getRoomQuiz();
+
+            this.$nextTick(() => {
+                if (this.roomQuiz) {
+                    this.quiz = this.quizzes.find(q => q.Id_Quiz === this.roomQuiz.fk_Quiz)
+                }
+            });
             this.editMode = true;
         },
 
-        editQuiz(e) {
+        editRoom(e) {
             e.preventDefault();
             Swal.showLoading();
 
-            axios.post(Update, this.quiz)
+            this.createRoomQuiz();
+            axios.post(Update, this.room)
                 .then(response => {
                     if (response.data.success) {
                         Swal.fire({
@@ -84,18 +151,20 @@ const app = createApp({
                             icon: 'success',
                             timer: 2000,
                         });
-                        this.getQuizzes();
+                        this.getRooms();
                         this.editMode = false;
                         this.resetForm();
-                        console.log("Quiz editado exitosamente");
+                        console.log("Room editado exitosamente");
                     }
                 })
                 .catch(error => {
-                    console.error("Error editando quiz:", error);
+                    console.error("Error editando room:", error);
                 });
         },
 
-        deleteQuiz(quiz) {
+        deleteRoom(room) {
+            console.log("sala: ", room);
+
             Swal.fire({
                 title: '¿Estás seguro?',
                 text: "¡No podrás revertir esto!",
@@ -108,7 +177,7 @@ const app = createApp({
                 if (result.isConfirmed) {
                     Swal.showLoading();
 
-                    axios.post(Delete, quiz)
+                    axios.post(Delete, room)
                         .then(response => {
                             if (response.data.success) {
                                 Swal.fire({
@@ -117,12 +186,12 @@ const app = createApp({
                                     icon: 'success',
                                     timer: 2000,
                                 });
-                                this.getQuizzes();
-                                console.log("Quiz eliminado exitosamente");
+                                this.getRooms();
+                                console.log("Room eliminado exitosamente");
                             }
                         })
                         .catch(error => {
-                            console.error("Error eliminando quiz:", error);
+                            console.error("Error eliminando room:", error);
                         });
                 }
             });
@@ -140,15 +209,13 @@ const app = createApp({
         },
 
         resetForm() {
-            this.quiz = {
+            this.room = {
                 fk_User: userId,
                 Name: '',
                 Description: '',
+                Password: '',
+                Active: false,
             };
-        },
-
-        viewQuestions(quiz) {
-            window.location.href = `${ViewQuestions}/${quiz.Id_Quiz}`;
         },
 
         generateTable() {
@@ -182,12 +249,9 @@ const app = createApp({
                 }
             });
         },
-
-        rooms() {
-            window.location.href = `${ViewRooms}/${userId}`;
-        }
     },
     mounted() {
+        this.getRooms();
         this.getQuizzes();
     }
 });

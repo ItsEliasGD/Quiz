@@ -30,7 +30,7 @@ namespace Quiz.Services
                     room.Password,
                     IdQuiz = _db.RoomQuizes
                         .Where(rq => rq.fk_Room == room.Id_Room)
-                        .Select(rq => rq.Id_RoomQuize)
+                        .Select(rq => rq.fk_Quiz)
                         .FirstOrDefault()
                 };
 
@@ -125,6 +125,7 @@ namespace Quiz.Services
                 .Select(r => new
                 {
                     r.Id_Room,
+                    r.fk_User,
                     r.Name,
                     r.Description,
                     r.Password,

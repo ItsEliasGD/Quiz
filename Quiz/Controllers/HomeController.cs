@@ -110,17 +110,17 @@ namespace Quiz.Controllers
         }
 
         [HttpPost]
-        public ActionResult DeleteRoom([FromBody] int IdRoom)
+        public ActionResult DeleteRoom([FromBody] Rooms room)
         {
             Response response = new();
-            if (IdRoom > 0) response = _RoomServices.Delete(IdRoom);
+            if (room != null) response = _RoomServices.Delete(room.Id_Room);
             return Json(response);
         }
 
         [HttpGet]
-        public ActionResult GetRooms(int IdRoom)
+        public ActionResult GetRooms(int IdUser)
         {
-            object? room = _RoomServices.Get(IdRoom);
+            object? room = _RoomServices.Get(IdUser);
             return Json(room);
         }
 
@@ -177,6 +177,22 @@ namespace Quiz.Controllers
             object list = new();
             if (IdQuiz > 0) list = _QuizServices.Sessions(IdQuiz);
             return Json(list);
+        }
+
+        [HttpGet]
+        public ActionResult GetRoomQuiz(int roomId)
+        {
+            object? roomQuiz = new();
+            if (roomId > 0) roomQuiz = _QuizServices.roomQuizzes(roomId);
+            return Json(roomQuiz);
+        }
+
+        [HttpPost]
+        public ActionResult CreateRoomQuiz([FromBody] RoomQuizes roomQuiz)
+        {
+            Response response = new();
+            if (roomQuiz != null) response = _QuizServices.CreateroomQuiz(roomQuiz);
+            return Json(response);
         }
 
         //Servicios Answer ------------------------------------------------------------------------------------------------
