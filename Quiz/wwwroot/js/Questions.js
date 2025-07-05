@@ -19,11 +19,24 @@
                 fk_Quiz: quizId,
                 Description: '',
                 Index: 0,
-            },  
+            },
             indexList: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
 
         };
     },
+
+    watch: {
+        createMode(val) {
+            this.toggleBodyScroll(val || this.editMode || this.addAnswersMode);
+        },
+        editMode(val) {
+            this.toggleBodyScroll(val || this.createMode || this.addAnswersMode);
+        },
+        addAnswersMode(val) {
+            this.toggleBodyScroll(val || this.createMode || this.editMode);
+        }
+    },
+
     methods: {
         getQuestions() {
 
@@ -49,8 +62,39 @@
                         text: 'An error occurred while fetching questions.',
                         icon: 'error',
                     });
-                })  
+                })
         },
+
+        toggleBodyScroll(isModalOpen) {
+            if (isModalOpen) {
+                document.body.classList.add('modal-open');
+            } else {
+                document.body.classList.remove('modal-open');
+            }
+        },
+
+        closeQuestionModal() {
+            this.createMode = false;
+            this.editMode = false;
+            this.question = {
+                fk_Quiz: quizId,
+                Description: '',
+                Index: 0,
+            };
+        },
+
+        closeAnswerModal() {
+            this.addAnswersMode = false;
+            this.editAnswerMode = false;
+            this.answer = {
+                Id_Answer: 0,
+                fk_Question: 0,
+                Description: '',
+                IsCorrect: false,
+                Index: 0,
+            };
+        },
+
 
         createQuestion() {
             Swal.fire({
@@ -60,7 +104,7 @@
                     Swal.showLoading();
                 }
             });
-    
+
             axios.post(Create, this.question)
                 .then(response => {
                     if (response.data.success) {
@@ -70,6 +114,7 @@
                             icon: 'success',
                             timer: 2000,
                         });
+                        this.createMode = false;
                         this.questions.push(this.question);
                         this.question = {
                             fk_Quiz: quizId,
@@ -152,7 +197,7 @@
         editQuestion() {
             Swal.fire({
                 text: 'Editing question...',
-                allowOutsideClick: false,   
+                allowOutsideClick: false,
                 didOpen: () => {
                     Swal.showLoading();
                 }
@@ -167,7 +212,7 @@
                             icon: 'success',
                             timer: 2000,
                         });
-                        const index = this.questions.findIndex(q => q.Id === this.question.Id);
+                        const index = this.questions.findIndex(q => q.Id_Question === this.question.Id_Question);
                         if (index !== -1) {
                             this.questions.splice(index, 1, this.question);
                         }
@@ -188,7 +233,7 @@
                     });
                 });
         },
-    
+
         deleteQuestion(question) {
             Swal.fire({
                 text: 'Are you sure you want to delete this question?',
@@ -231,7 +276,7 @@
                 }
             });
         },
-    
+
         addAnswers(fkQuestion) {
             this.answers.push(this.answer);
             console.log("nueva respuesta", this.answer);
@@ -369,7 +414,7 @@
                     });
                 });
         },
-    
+
         generateTable() {
             $(this.$refs.table).DataTable({
                 paging: true,
