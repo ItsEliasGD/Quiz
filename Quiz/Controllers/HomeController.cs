@@ -189,18 +189,18 @@ namespace Quiz.Controllers
         }
 
         [HttpPost]
-        public ActionResult UpdateAnswer([FromBody] Answers answers)
+        public ActionResult UpdateAnswer([FromBody] Answers answer)
         {
             Response response = new();
-            if (answers != null) response = _AnswerServices.Update(answers);
+            if (answer != null) response = _AnswerServices.Update(answer);
             return Json(response);
         }
 
         [HttpPost]
-        public ActionResult DeleteAnswers([FromBody] int IdAnswer)
+        public ActionResult DeleteAnswer([FromBody] Answers answer)
         {
             Response response = new();
-            if (IdAnswer > 0) response = _AnswerServices.Delete(IdAnswer);
+            if (answer != null) response = _AnswerServices.Delete(answer.Id_Answer);
             return Json(response);
         }
 
@@ -214,7 +214,7 @@ namespace Quiz.Controllers
 
         //Servicios Question ------------------------------------------------------------------------------------------------
         [HttpPost]
-        public ActionResult CreateQuestion([FromBody] List<Questions> question)
+        public ActionResult CreateQuestion([FromBody] Questions question)
         {
             Response response = new();
             if (question != null) response = _QuestionServices.Create(question);
@@ -230,10 +230,10 @@ namespace Quiz.Controllers
         }
 
         [HttpPost]
-        public ActionResult DeleteQuestion([FromBody] int IdQuestion)
+        public ActionResult DeleteQuestion([FromBody] Questions question)
         {
             Response response = new();
-            if (IdQuestion > 0) response = _QuestionServices.Delete(IdQuestion);
+            if (question != null) response = _QuestionServices.Delete(question.Id_Question);
             return Json(response);
         }
 

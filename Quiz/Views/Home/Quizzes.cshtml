@@ -25,7 +25,7 @@
                     <tr v-for="quiz in quizzes" :key="quiz.Id">
                         <td>{{ quiz.Name }}</td>
                         <td>{{ quiz.Description }}</td>
-                        <td>{{ quiz.Status }}</td>
+                        <td>{{ quiz.Active ? "Activo" : "Inactivo" }}</td>
                         <td>
                             <div class="d-flex gap-2">
                                 <button class="btn btn-sm btn-primary" @@click="editToggle(quiz)">Editar</button>
@@ -75,8 +75,8 @@
 
 @section scripts {
     <script>
-        const userId = @Model;
-        const Quizzes = "@Url.Action("GetQuizzes", "Home")";
+        const userId = parseInt('@Model');
+        const Quizzes = "@Url.Action("GetQuizzes","Home")";
         const Create = "@Url.Action("CreateQuiz", "Home")";
         const Update = "@Url.Action("UpdateQuiz", "Home")";
         const Delete = "@Url.Action("DeleteQuiz", "Home")";
