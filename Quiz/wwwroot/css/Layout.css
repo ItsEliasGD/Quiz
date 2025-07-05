@@ -2,6 +2,10 @@
     display: none;
 }
 
-body{
-    background-color:rgb(224, 224, 224);
+.bg-login {
+    background-image: url('/images/skyBlur.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
 }
